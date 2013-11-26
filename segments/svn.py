@@ -12,6 +12,7 @@ def add_svn_segment():
     p2 = subprocess.Popen(['grep', '-c', '^[ACDIMR\\!\\~]'],
             stdin=p1.stdout, stdout=subprocess.PIPE)
     output = p2.communicate()[0].strip()
+    output = unicode(output, 'utf-8')
     if len(output) > 0 and int(output) > 0:
         changes = output.strip()
         powerline.append(' %s ' % changes, Color.SVN_CHANGES_FG, Color.SVN_CHANGES_BG)

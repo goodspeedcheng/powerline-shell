@@ -7,6 +7,7 @@ def get_hg_status():
     has_missing_files = False
     output = subprocess.Popen(['hg', 'status'],
             stdout=subprocess.PIPE).communicate()[0]
+    output = unicode(output, 'utf-8')
     for line in output.split('\n'):
         if line == '':
             continue

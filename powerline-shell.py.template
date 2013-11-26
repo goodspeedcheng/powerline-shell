@@ -5,8 +5,10 @@ import argparse
 import os
 import sys
 
+
 def warn(msg):
     print '[powerline-bash] ', msg
+
 
 class Powerline:
     symbols = {
@@ -59,15 +61,17 @@ class Powerline:
 
     def append(self, content, fg, bg, separator=None, separator_fg=None):
         self.segments.append((content, fg, bg, separator or self.separator,
-            separator_fg or bg))
+                              separator_fg or bg))
 
     def draw(self):
-        return (''.join(self.draw_segment(i) for i in range(len(self.segments)))
+        return (''.join(self.draw_segment(i)
+                        for i in range(len(self.segments)))
                 + self.reset).encode('utf-8')
 
     def draw_segment(self, idx):
         segment = self.segments[idx]
-        next_segment = self.segments[idx + 1] if idx < len(self.segments)-1 else None
+        next_segment = (self.segments[idx + 1]
+                        if idx < len(self.segments) - 1 else None)
 
         return ''.join((
             self.fgcolor(segment[1]),
@@ -76,6 +80,7 @@ class Powerline:
             self.bgcolor(next_segment[2]) if next_segment else self.reset,
             self.fgcolor(segment[4]),
             segment[3]))
+
 
 def get_valid_cwd():
     """ We check if the current working directory is valid or not. Typically
@@ -98,25 +103,33 @@ def get_valid_cwd():
         except:
             warn("Your current directory is invalid.")
             sys.exit(1)
-        warn("Your current directory is invalid. Lowest valid directory: " + up)
+        warn("Your current directory is invalid. Lowest valid directory: "
+             + up)
     return cwd
 
 
 if __name__ == "__main__":
     arg_parser = argparse.ArgumentParser()
-    arg_parser.add_argument('--cwd-only', action='store_true',
-            help='Only show the current directory')
-    arg_parser.add_argument('--cwd-max-depth', action='store', type=int,
-            default=5, help='Maximum number of directories to show in path')
-    arg_parser.add_argument('--colorize-hostname', action='store_true',
-            help='Colorize the hostname based on a hash of itself.')
-    arg_parser.add_argument('--mode', action='store', default='patched',
-            help='The characters used to make separators between segments',
-            choices=['patched', 'compatible', 'flat'])
-    arg_parser.add_argument('--shell', action='store', default='bash',
-            help='Set this to your shell type', choices=['bash', 'zsh', 'bare'])
-    arg_parser.add_argument('prev_error', nargs='?', type=int, default=0,
-            help='Error code returned by the last command')
+    arg_parser.add_argument(
+        '--cwd-only', action='store_true',
+        help='Only show the current directory')
+    arg_parser.add_argument(
+        '--cwd-max-depth', action='store',
+        type=int, default=5,
+        help='Maximum number of directories to show in path')
+    arg_parser.add_argument(
+        '--colorize-hostname', action='store_true',
+        help='Colorize the hostname based on a hash of itself.')
+    arg_parser.add_argument(
+        '--mode', action='store', default='patched',
+        help='The characters used to make separators between segments',
+        choices=['patched', 'compatible', 'flat'])
+    arg_parser.add_argument(
+        '--shell', action='store', default='bash',
+        help='Set this to your shell type', choices=['bash', 'zsh', 'bare'])
+    arg_parser.add_argument(
+        'prev_error', nargs='?', type=int, default=0,
+        help='Error code returned by the last command')
     args = arg_parser.parse_args()
 
     powerline = Powerline(args, get_valid_cwd())

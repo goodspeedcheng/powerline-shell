@@ -7,6 +7,7 @@ def get_git_status():
     origin_position = ""
     output = subprocess.Popen(['git', 'status', '--ignore-submodules'],
             stdout=subprocess.PIPE).communicate()[0]
+    output = unicode(output, 'utf-8')
     for line in output.split('\n'):
         origin_status = re.findall(
                 r"Your branch is (ahead|behind).*?(\d+) comm", line)
